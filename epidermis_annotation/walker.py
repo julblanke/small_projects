@@ -4,11 +4,13 @@ import cv2
 class Walker:
     """ Class to filter annotation image with canny and run a walker function to get coordinates of inner
         and outer epidermis edges.
-
-    Attributes:
-        annotation_img (2d array): Annotation (grayscale)
     """
     def __init__(self, annotation_img):
+        """ Constructor.
+
+        Args:
+            annotation_img (2d array): Annotation (grayscale)
+        """
         self.annotation_img = annotation_img
 
     def get_annotation_edges(self) -> tuple(list(list(tuple)), np.array):
@@ -23,13 +25,13 @@ class Walker:
         return annotation_edges, img_canny
 
     def _get_img_canny(self):
-        """ returns canny filtered image """
+        """ Returns canny filtered image. """
         return cv2.Canny(self.annotation_img, 50, 150)
 
     def _run_walker(self, img_canny) -> list(list(tuple)):
         """ Runs a walker through canny filtered image of annotation; tracks the edges of epidermis and save coordinates.
 
-        Parameters:
+        Args:
             img_canny (2d array): Canny edge filtered annotation image (grayscale)
 
         Returns:

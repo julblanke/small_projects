@@ -3,22 +3,23 @@ from skimage.measure import label
 
 
 class Cluster:
-    """ Class to find and count cluster; defines a walker who tracks edge of inner epidermis.
-
-    Attributes:
-        orig_img (3d array): Original image (rgb)
-        inner_epi (list): Coordinates of inner epidermis edge
-        pixel_width (int): User defined pixel width left and right to inner epidermis edge for cluster window
-        green_threshold (int): User defined value for green value threshold concerning clustering
-    """
+    """ Class to find and count cluster; defines a walker who tracks edge of inner epidermis. """
     def __init__(self, orig_img, inner_epi, pixel_width, green_threshold):
+        """ Constructor.
+
+        Args:
+            orig_img (3d array): Original image (rgb)
+            inner_epi (list): Coordinates of inner epidermis edge
+            pixel_width (int): User defined pixel width left and right to inner epidermis edge for cluster window
+            green_threshold (int): User defined value for green value threshold concerning clustering
+        """
         self.orig_img = orig_img
         self.inner_epi = inner_epi
         self.pixel_width = pixel_width
         self.green_threshold = green_threshold
 
     def get_cluster_amount(self) -> tuple(int, list(list(tuple))):
-        """ Returns cluster amount after creating cluster window and searching for clusters
+        """ Returns cluster amount after creating cluster window and searching for clusters.
 
         Returns:
              cluster_amount (int): Amount of clusters in window
