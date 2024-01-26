@@ -76,6 +76,7 @@ def _get_inner_epidermis(annotation_edges) -> list:
 
     Args:
         annotation_edges (list(list(tuple))): Contains coordinates of inner epidermis using annotation edges
+
     Returns:
         (list): Returns inner epidermis edge
     """
