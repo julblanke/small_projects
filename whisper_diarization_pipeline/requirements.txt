@@ -1,0 +1,8 @@
+librosa
+torch
+whisperx
+python-dotenv
+pandas
+numpy<2.0
+pydub
+streamlit
