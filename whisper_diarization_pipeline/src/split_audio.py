@@ -29,7 +29,7 @@ def split_audio_to_chunks(audio_file_path: str, output_dir: str, chunk_length: i
         (audio_data * 32767).astype(np.int16).tobytes(),  # convertion to 16-bit PCM format
         frame_rate=sr,
         sample_width=2,  # 16-bit audio
-        channels=1       # Mono audio
+        channels=1       # mono audio
     )
 
     for i in range(num_chunks):
