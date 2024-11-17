@@ -6,7 +6,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 import os
 import streamlit as st
 from src.split_audio import split_audio_to_chunks
-from src.whisper_speaker_annotation import process_audio
+from src.whisper_transcription import process_audio
 
 
 def get_transcription_files(output_dir: str) -> list:
@@ -35,7 +35,11 @@ def main() -> None:
         st.header("Configuration")
         st.session_state.audio_input_path = st.text_input("Input audio file path", "/path/to/audio_file.m4a")
         st.session_state.output_dir = st.text_input("Output directory", "/path/to/output_dir")
-        st.session_state.split_audio = st.checkbox("Split audio to chunks", True)
+        st.session_state.split_audio = st.checkbox("Split audio to chunks", False)
+        st.session_state.transcription_method = st.sidebar.selectbox(
+            "Choose a transcription method:",
+            ("Plain", "Speaker Annotation")
+        )
         st.session_state.chunk_length = st.number_input("Chunk length [s]", 120)
         st.session_state.sample_rate = st.number_input("Sample rate [Hz]", 16000)
 
@@ -57,7 +61,7 @@ def main() -> None:
                 status_text = st.empty()
 
                 process_audio(output_dir=st.session_state.output_dir, progress_bar=progress_bar,
-                              status_text=status_text)
+                              status_text=status_text, transcription_method=st.session_state.transcription_method)
 
                 st.success("Transcription complete!")
 
