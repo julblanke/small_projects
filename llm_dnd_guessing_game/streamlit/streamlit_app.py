@@ -5,6 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 from src.run import LlmDndGuessingGame
 
 
@@ -41,6 +42,7 @@ def main() -> None:
         st.session_state.game_stats = {
             "games_played": 0,
             "guesses_per_game": [],
+            "scores": []
         }
 
     # ----------------- SIDEBAR ---------------------
@@ -63,7 +65,7 @@ def main() -> None:
         st.session_state.player_class = st.selectbox("Select a D&D class:", dnd_classes)
         st.write(f"🎲 You selected: **{st.session_state.player_class}**")
 
-        # start Game Button
+        # start game button
         if not st.session_state.game_started:
             if st.button("Start Game"):
                 st.session_state.game_started = True
@@ -142,6 +144,7 @@ def main() -> None:
                     st.session_state.messages.append({"role": "assistant", "content": f"**Hint:** {hint}"})
                     st.session_state.hints_used += 1
                     st.session_state.total_score -= 0.25
+                    st.session_state.game.total_score -= 0.25
                     st.rerun()  # refresh to display hint immediately
 
                 # auto-scroll to latest message
@@ -161,6 +164,7 @@ def main() -> None:
             if st.button("New Game"):
                 st.session_state.game_stats["games_played"] += 1
                 st.session_state.game_stats["guesses_per_game"].append(st.session_state.guesses_in_current_game)
+                st.session_state.game_stats["scores"].append(st.session_state.total_score)
 
                 # resets the game state
                 st.session_state.game_started = False
@@ -176,19 +180,35 @@ def main() -> None:
         with tab3:
             st.header("Stats")
             st.write(f"**Games Played:** {st.session_state.game_stats['games_played']}")
-            if st.session_state.game_stats["games_played"] > 0:
-                average_guesses = sum(st.session_state.game_stats["guesses_per_game"]) / st.session_state.game_stats[
-                    "games_played"]
-                st.write(f"**Average Score per Game:** {average_guesses:.2f}")
-            else:
+            if not st.session_state.game_stats["games_played"] > 0:
                 st.write("No games played yet.")
 
-            # bar chart
+            # bar chart with different colors
             if st.session_state.game_stats["games_played"] > 0:
-                st.bar_chart(pd.DataFrame({
-                    "Game Number": list(range(1, st.session_state.game_stats["games_played"] + 1)),
-                    "Guesses": st.session_state.game_stats["guesses_per_game"]
-                }).set_index("Game Number"))
+                games_played = st.session_state.game_stats["games_played"]
+                guesses_per_game = st.session_state.game_stats["guesses_per_game"]
+                scores = st.session_state.game_stats["scores"]
+                avg_score_per_guess = [
+                    score / guesses if guesses != 0 else 0 for score, guesses in zip(scores, guesses_per_game)
+                ]
+
+                data = pd.DataFrame({
+                    "Game ID": list(range(1, games_played + 1)),
+                    "Average Score per Guess": avg_score_per_guess
+                })
+
+                num_bars = len(data["Game ID"])
+                colors = plt.cm.get_cmap("tab10", num_bars).colors
+
+                fig, ax = plt.subplots()
+                _ = ax.bar(data["Game ID"], data["Average Score per Guess"], color=colors)
+
+                ax.set_xlabel("Game ID")
+                ax.set_ylabel("Average Score per Guess")
+                ax.set_title("Average Score per Guess per Game")
+                ax.set_xticks(data["Game ID"])
+
+                st.pyplot(fig)
 
 
 if __name__ == "__main__":

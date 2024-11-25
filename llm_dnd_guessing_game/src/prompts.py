@@ -4,6 +4,61 @@ from dataclasses import dataclass
 @dataclass
 class Prompts:
 
+    # repairs failed output concerning option shuffling and score
+    prompt_healing_instructions = ("""
+        You are given the response of an LLM call for an LLM-based D&D adventure game. In this game, it is critical 
+        that the options presented to the user are randomized in position. Your task is to reorder the options randomly 
+        while ensuring the following rules are strictly followed:
+    
+        1. **Maintain Pairing**: Each option’s text and its corresponding hidden score (e.g., `<<Score:X>>`) form a 
+        single, inseparable pair. When reordering, the text and the score must remain together and unchanged.
+        
+        2. **Randomization**: The reordering must be truly random each time this instruction is executed. There should 
+        be no discernible pattern in the new order.
+        
+        3. **Output Format**: After reordering, present the initial prompt with the options in the exact same format as 
+        they appeared originally:
+           - Each option should start on a new line.
+           - Options must be labeled as "Option 1", "Option 2", etc., in the new random order.
+           - Ensure all options are properly numbered in sequence after randomization.
+           - Ensure to include the text before the options.
+        
+        4. **Integrity of Content**: Do not modify the text or scores of the options. Only their order should change.
+        
+        5. **Missing Score**:
+           - If, and only if, one or more options are missing a hidden score (e.g., `<<Score:X>>`), evaluate the 
+           options and assign scores to the missing ones based on their plausibility and effectiveness. 
+           - Use the following scoring system:
+             - **+1 point**: The wisest and most logical option.
+             - **+0.5 points**: A creative or moderately effective option.
+             - **0 points**: An ineffective or neutral option.
+             - **-0.5 points**: A counterproductive or foolish option.
+           - Ensure the scores align with the descriptions of the options, and be consistent with the game’s logic and context.
+           - If all options already have scores, do not modify them.
+        ---
+        
+        ### Example Before Reordering:
+        Options:
+        Option 1: Attempt to intimidate the unseen entity with a bold declaration of your power. <<Score:+0.5>>  
+        Option 2: Use your Eldritch Sight to detect any magical traps or enchantments. <<Score:+1>>  
+        Option 3: Search the altar for clues about what might have caused this phenomenon. <<Score:0>>  
+        Option 4: Rush forward recklessly to confront whatever is lurking in the shadows. <<Score:-0.5>>  
+        
+        ---
+        
+        ### Example After Reordering:
+        Options:
+        Option 1: Rush forward recklessly to confront whatever is lurking in the shadows. <<Score:-0.5>>  
+        Option 2: Use your Eldritch Sight to detect any magical traps or enchantments. <<Score:+1>>  
+        Option 3: Attempt to intimidate the unseen entity with a bold declaration of your power. <<Score:+0.5>>  
+        Option 4: Search the altar for clues about what might have caused this phenomenon. <<Score:0>>  
+        
+        ---
+        
+        ### Output the Result
+        After reordering, return the response you have been given with the new ordered options and the scores.
+    """)
+
     # with player class
     dungeon_master_instructions_v1 = (
         "You are a skilled Dungeon Master, an expert in creating engaging and immersive adventures "
@@ -77,6 +132,7 @@ class Prompts:
         "Please choose an option (1-4) and explain your reasoning if you wish."
     )
 
+    # ------------------------------------ INACTIVE ------------------------------------
     # w/o player class
     dungeon_master_instructions_v0 = (
         "You are a skilled Dungeon Master, an expert in creating engaging and immersive adventures "
