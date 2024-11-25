@@ -78,12 +78,22 @@ class LlmDndGuessingGame:
         )
         assistant_message = response.choices[0].message.content
 
+        option_shuffle_prompt = [{"role": "system", "content": self.prompts.prompt_healing_instructions +
+                                                              f"\n Current LLM response: {assistant_message}"}]
+        response_option_shuffler = self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=option_shuffle_prompt,
+            max_tokens=500,
+            temperature=0.7,
+        )
+        assistant_message_option_shuffled = response_option_shuffler.choices[0].message.content
+
         # extracts score for evaluation from response
-        points = self.extract_points_from_evaluation(assistant_message)
+        points = self.extract_points_from_evaluation(assistant_message_option_shuffled)
         self.total_score += points
 
         # removes scores from response (since it includes new generated scenario); adds cleaned msg to LLM context
-        assistant_message_cleaned = self.extract_and_remove_scores(assistant_message)
+        assistant_message_cleaned = self.extract_and_remove_scores(assistant_message_option_shuffled)
         self.messages.append({"role": "assistant", "content": assistant_message_cleaned})
         return assistant_message_cleaned
 
