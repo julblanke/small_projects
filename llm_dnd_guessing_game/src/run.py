@@ -1,6 +1,5 @@
 import os
 import re
-import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 from src.prompts import Prompts
@@ -10,10 +9,9 @@ class LlmDndGuessingGame:
     """Main Clas for running the LLM driven D&D Guessing Game."""
     def __init__(self) -> None:
         """Init LlmDndGuessingGame class."""
-        #load_dotenv()
+        load_dotenv()
         self.client = OpenAI(
-            api_key=st.secrets["openai"]["api_key"]
-
+            api_key=os.getenv("OPENAI_API_KEY")
         )
         self.messages = []
         self.total_score = 0
