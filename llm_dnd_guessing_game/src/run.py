@@ -162,7 +162,7 @@ class LlmDndGuessingGame:
         if match:
             points = float(match.group(2))
             if match.group(1) == 'lost':
-                points = -points        # *(-1) if negative
+                points = -points
             return points
         else:
             # if LLM hallucinates and misses to explicitly tell the score, looks up the last user input to determine
