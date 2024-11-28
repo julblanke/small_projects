@@ -1,0 +1,7 @@
+# needed here for llm dnd guessing game public streamlit hosting
+python-dotenv
+streamlit
+openai
+matplotlib
+pandas
+numpy
