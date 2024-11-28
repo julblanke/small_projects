@@ -10,7 +10,7 @@ class LlmDndGuessingGame:
     """Main Clas for running the LLM driven D&D Guessing Game."""
     def __init__(self) -> None:
         """Init LlmDndGuessingGame class."""
-        load_dotenv()
+        #load_dotenv()
         self.client = OpenAI(
             api_key=st.secrets["openai"]["api_key"]
 
