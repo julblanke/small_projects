@@ -3,10 +3,14 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
+import os
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 from src.run import LlmDndGuessingGame
+
+
+os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
 
 
 def format_response(response: str) -> str:
