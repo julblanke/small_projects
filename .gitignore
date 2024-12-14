@@ -1,2 +1,3 @@
 whisper_diarization_pipeline/.env
 llm_dnd_guessing_game/.env
+.devcontainer
