@@ -21,6 +21,7 @@ def _run_plain_transcription(model: Any, audio_path: str, device: str) -> str:
     Returns:
         transcription_text (str): Transcribed audio data content.
     """
+    print(device)
     model_id = "openai/whisper-large-v3"
     processor = AutoProcessor.from_pretrained(model_id)
     audio_data, sr = librosa.load(audio_path, sr=16000)
@@ -124,16 +125,15 @@ def process_audio(output_dir: str, progress_bar: Any, status_text: Any, transcri
     compute_type = "int8" if device == "cpu" else "float16"
 
     model = None
-    if transcription_method == "Plain":
-        torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-        model_id = "openai/whisper-large-v3"
-        model = AutoModelForSpeechSeq2Seq.from_pretrained(
-            model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
-        )
-        model.to(device)
-    elif transcription_method == "Speaker Annotation":
-        model_id = "large-v2"
-        model = whisperx.load_model(model_id, device, compute_type=compute_type, asr_options={"hotwords": None})
+    torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+    model_id = "openai/whisper-large-v3"
+    model_hf = AutoModelForSpeechSeq2Seq.from_pretrained(
+        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+    )
+    model_hf.to(device)
+
+    model_id = "large-v2"
+    model_wa = whisperx.load_model(model_id, device, compute_type=compute_type, asr_options={"hotwords": None})
 
     # process audio files
     for idx, file in enumerate(audio_files, start=1):
@@ -141,11 +141,15 @@ def process_audio(output_dir: str, progress_bar: Any, status_text: Any, transcri
 
         transcription_text = None
         if transcription_method == "Plain":
-            transcription_text = _run_plain_transcription(model=model, audio_path=audio_path, device=device)
+            transcription_text = _run_plain_transcription(model=model_hf, audio_path=audio_path, device=device)
         elif transcription_method == "Speaker Annotation":
-            transcription_text = _run_speaker_annotation_transcription(model=model,
-                                                                       audio_path=audio_path,
-                                                                       device=device)
+            try:
+                transcription_text = _run_speaker_annotation_transcription(model=model_wa,
+                                                                           audio_path=audio_path,
+                                                                           device=device)
+            except Exception as e:
+                print("Switching to Plain")
+                transcription_text = _run_plain_transcription(model=model_hf, audio_path=audio_path, device=device)
 
         # file handling
         chunk_name = file.split(".mp4")[0]
@@ -157,3 +161,8 @@ def process_audio(output_dir: str, progress_bar: Any, status_text: Any, transcri
         if progress_bar and status_text:
             progress_bar.progress(idx / total_chunks)
             status_text.write(f"Processed {idx}/{total_chunks} chunks")
+
+
+if __name__ == "__main__":
+    process_audio(output_dir="/home/jbla/Desktop/lena_audios/Tommes sozpä", progress_bar=None,
+                  status_text=None, transcription_method="Speaker Annotation")   # Speaker Annotation

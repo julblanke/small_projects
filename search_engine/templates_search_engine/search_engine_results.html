@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Search Results</title>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <style>
+    /* Light Mode */
+    body {
+      background-color: #eceff1;
+      color: #37474f;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .results-container {
+      max-width: 800px;
+      margin: 3rem auto;
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .search-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .search-header h2 {
+      font-weight: 700;
+      color: #37474f;
+    }
+
+    .result-item + .result-item {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #cfd8dc;
+    }
+
+    .result-title a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #1565c0;
+    }
+    .result-title a:hover {
+      text-decoration: underline;
+    }
+
+    .result-url {
+      font-size: 0.9rem;
+      color: #78909c;
+    }
+
+    .result-snippet {
+      margin-top: 0.5rem;
+    }
+
+    .result-description {
+      margin-top: 0.5rem;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #757575;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .btn-secondary {
+      background-color: #37474f;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-secondary:hover {
+      background-color: #455a64;
+    }
+
+    .toggle-container {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .btn-outline-secondary {
+      border-color: #607d8b;
+      color: #607d8b;
+    }
+    .btn-outline-secondary:hover {
+      background-color: #607d8b;
+      color: #ffffff;
+    }
+
+    /* Dark Mode */
+    .dark-mode {
+      background-color: #263238 !important;
+      color: #eceff1 !important;
+    }
+
+    .dark-mode .results-container {
+      background-color: #37474f;
+      box-shadow: none;
+    }
+
+    .dark-mode .search-header h2 {
+      color: #eceff1;
+    }
+
+    .dark-mode .result-item + .result-item {
+      border-top: 1px solid #607d8b;
+    }
+
+    .dark-mode .result-title a {
+      color: #bbdefb;
+    }
+
+    .dark-mode .result-url {
+      color: #cfd8dc;
+    }
+
+    .dark-mode .result-snippet {
+      color: #eceff1;
+    }
+
+    .dark-mode .result-description {
+      color: #b0bec5;
+    }
+
+    .dark-mode .btn-secondary {
+      background-color: #cfd8dc;
+      color: #263238;
+    }
+    .dark-mode .btn-secondary:hover {
+      background-color: #b0bec5;
+    }
+    .dark-mode .btn-outline-secondary {
+      border-color: #b0bec5;
+      color: #b0bec5;
+    }
+    .dark-mode .btn-outline-secondary:hover {
+      background-color: #b0bec5;
+      color: #263238;
+    }
+  </style>
+</head>
+<body>
+  <div class="container results-container">
+    <div class="search-header">
+      <h2>Search Results for: <em>{{ query }}</em></h2>
+    </div>
+
+    {% if results and results|length > 0 %}
+      {% for item in results %}
+        <div class="result-item">
+          <h4 class="result-title">
+            <a href="{{ item[0] }}" target="_blank">{{ item[2] }}</a>
+          </h4>
+          <p class="result-url">{{ item[0] }}</p>
+          <p class="result-snippet">{{ item[1]|safe }}</p>
+          <p class="result-description">
+            {{ item[4] }}
+          </p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-info" role="alert">
+        No items found for your query.
+      </div>
+    {% endif %}
+
+    <div class="back-link">
+      <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Search</a>
+    </div>
+
+    <div class="toggle-container">
+      <button id="toggle-dark-mode" class="btn btn-outline-secondary">
+        Toggle Dark Mode
+      </button>
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    const btnToggleDarkMode = document.getElementById("toggle-dark-mode");
+    btnToggleDarkMode.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+  </script>
+</body>
+</html>

@@ -1,14 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Search Page</title>
+  <meta charset="UTF-8" />
+  <title>Search Engine</title>
+
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <style>
+    /* Light Mode */
+    body {
+      background-color: #eceff1;
+      color: #37474f;
+      transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+      background-color: #ffffff;
+      border-radius: 0.75rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    .search-container h1 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: #37474f;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      float: left;
+    }
+
+    .btn-search {
+      width: 100%;
+      font-weight: 600;
+      margin-top: 1rem;
+      background-color: #37474f;
+      border: none;
+    }
+    .btn-search:hover {
+      background-color: #455a64;
+    }
+
+    .toggle-container {
+      margin-top: 1.5rem;
+    }
+
+    .btn-outline-secondary {
+      border-color: #607d8b;
+      color: #607d8b;
+    }
+    .btn-outline-secondary:hover {
+      background-color: #607d8b;
+      color: #ffffff;
+    }
+
+    footer {
+      margin-top: 2rem;
+      color: #607d8b;
+      font-size: 0.9rem;
+    }
+
+    /* Dark Mode Styles */
+    .dark-mode {
+      background-color: #263238 !important;
+      color: #eceff1 !important;
+    }
+    .dark-mode .search-container {
+      background-color: #37474f;
+      box-shadow: none;
+    }
+    .dark-mode .search-container h1 {
+      color: #eceff1;
+    }
+    .dark-mode .btn-search {
+      background-color: #cfd8dc;
+      color: #263238;
+    }
+    .dark-mode .btn-search:hover {
+      background-color: #b0bec5;
+    }
+    .dark-mode .btn-outline-secondary {
+      border-color: #b0bec5;
+      color: #b0bec5;
+    }
+    .dark-mode .btn-outline-secondary:hover {
+      background-color: #b0bec5;
+      color: #263238;
+    }
+    .dark-mode footer {
+      color: #cfd8dc;
+    }
+  </style>
 </head>
 <body>
-    <h1>Search Page</h1>
+  <div class="search-container">
+    <h1>Search Engine</h1>
     <form action="{{ url_for('search') }}" method="get">
-        <label for="search">Search:</label>
-        <input type="text" id="search" name="q">
-        <input type="submit" value="Search">
+      <div class="form-group text-left">
+        <label for="search">Type your query:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="search"
+          name="q"
+          placeholder="Enter search term(s) here"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary btn-search">Search</button>
     </form>
+
+    <div class="toggle-container">
+      <button id="toggle-dark-mode" class="btn btn-outline-secondary">
+        Toggle Dark Mode
+      </button>
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    const btnToggleDarkMode = document.getElementById("toggle-dark-mode");
+    btnToggleDarkMode.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+  </script>
 </body>
 </html>
