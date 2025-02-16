@@ -122,6 +122,7 @@ def process_audio(output_dir: str, progress_bar: Any, status_text: Any, transcri
 
     # model config
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    device="cpu"
     compute_type = "int8" if device == "cpu" else "float16"
 
     model = None
@@ -161,8 +162,3 @@ def process_audio(output_dir: str, progress_bar: Any, status_text: Any, transcri
         if progress_bar and status_text:
             progress_bar.progress(idx / total_chunks)
             status_text.write(f"Processed {idx}/{total_chunks} chunks")
-
-
-if __name__ == "__main__":
-    process_audio(output_dir="/home/jbla/Desktop/lena_audios/Tommes sozpä", progress_bar=None,
-                  status_text=None, transcription_method="Speaker Annotation")   # Speaker Annotation
