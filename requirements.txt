@@ -5,3 +5,8 @@ openai
 matplotlib
 pandas
 numpy
+
+# --
+flask
+flask-sqlalchemy
+requests

@@ -43,12 +43,3 @@ def split_audio_to_chunks(audio_file_path: str, output_dir: str, chunk_length: i
             audio_chunk.export(output_file, format="mp4")
         except Exception as e:
             return
-
-
-if __name__ == "__main__":
-    split_audio_to_chunks(r"/home/jbla/Desktop/Audios/Tommes sozpä.m4a",
-                          r"/home/jbla/Desktop/lena_audios/Tommes sozpä",
-                          120,
-                          16000)
-
-
